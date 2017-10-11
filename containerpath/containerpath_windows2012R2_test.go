@@ -16,7 +16,7 @@ var _ = Describe("containerpath.For", func() {
 	var userProfile string
 	BeforeEach(func() {
 		userProfile = os.Getenv("USERPROFILE")
-		os.Setenv("USERPROFILE", filepath.Join("C:", "varrr", "veecap"))
+		os.Setenv("USERPROFILE", filepath.Join("C:\\", "varrr", "veecap"))
 	})
 
 	AfterEach(func() {
