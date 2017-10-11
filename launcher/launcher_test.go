@@ -404,6 +404,13 @@ var _ = Describe("Launcher", func() {
 
 				Context("when the instance cert and key are invalid", func() {
 					BeforeEach(func() {
+						newEnv := []string{}
+						for _, env := range launcherCmd.Env {
+							if !(strings.HasPrefix(env, "CF_INSTANCE_CERT") || strings.HasPrefix(env, "CF_INSTANCE_KEY")) {
+								newEnv = append(newEnv, env)
+							}
+						}
+						launcherCmd.Env = newEnv
 						if containerpath.For("/") == fixturesSslDir {
 							launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("CF_INSTANCE_CERT=%s", filepath.Join("/hello", "hello.go")))
 							launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("CF_INSTANCE_KEY=%s", filepath.Join("/hello", "hello.go")))
