@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	. "code.cloudfoundry.org/buildpackapplifecycle/containerpath"
+	"code.cloudfoundry.org/buildpackapplifecycle/containerpath"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
