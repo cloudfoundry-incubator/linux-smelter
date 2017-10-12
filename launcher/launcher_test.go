@@ -37,7 +37,7 @@ var _ = Describe("Launcher", func() {
 		if runtime.GOOS == "windows" {
 			startCommand = "cmd /C set && echo PWD=%cd% && echo running app"
 
-			testCmd = &exec.Cmd{
+			testCmd := &exec.Cmd{
 				Path: "cmd",
 				Args: []string{
 					"/C",
@@ -46,6 +46,7 @@ var _ = Describe("Launcher", func() {
 				Env: append(os.Environ(), "USERPROFILE=blah"),
 			}
 			out, err := testCmd.Output()
+			Expect(err).NotTo(HaveOccurred())
 			fmt.Fprintf(os.Stderr, "OUTPUT is %v", out)
 		} else {
 			startCommand = "env; echo running app"
