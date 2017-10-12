@@ -47,7 +47,7 @@ var _ = Describe("Launcher", func() {
 			}
 			out, err := testCmd.Output()
 			Expect(err).NotTo(HaveOccurred())
-			fmt.Fprintf(os.Stderr, "OUTPUT is %v", out)
+			fmt.Fprintf(os.Stderr, "OUTPUT is %v", string(out))
 		} else {
 			startCommand = "env; echo running app"
 		}
