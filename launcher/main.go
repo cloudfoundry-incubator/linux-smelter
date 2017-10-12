@@ -91,17 +91,11 @@ func main() {
 		os.Exit(3)
 	}
 	if platformOptions != nil && platformOptions.CredhubURI != "" {
-		ch, err := credhubClient(platformOptions.CredhubURI)
+		err := interpolateServicesCredhubRefs(platformOptions.CredhubURI)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Unable to set up credhub client: %v", err)
+			fmt.Fprintf(os.Stderr, "Unable to interpolate credhub refs: %v", err)
 			os.Exit(4)
 		}
-		interpolatedServices, err := ch.InterpolateString(os.Getenv("VCAP_SERVICES"))
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Unable to interpolate credhub references: %v", err)
-			os.Exit(5)
-		}
-		os.Setenv("VCAP_SERVICES", interpolatedServices)
 	}
 
 	if os.Getenv("DATABASE_URL") == "" {
@@ -113,6 +107,19 @@ func main() {
 
 	runtime.GOMAXPROCS(1)
 	runProcess(dir, command)
+}
+
+func interpolateServicesCredhubRefs(credhubURI string) error {
+	ch, err := credhubClient(credhubURI)
+	if err != nil {
+		return fmt.Errorf("Unable to set up credhub client: %v", err)
+	}
+	interpolatedServices, err := ch.InterpolateString(os.Getenv("VCAP_SERVICES"))
+	if err != nil {
+		return fmt.Errorf("Unable to interpolate credhub references: %v", err)
+	}
+	os.Setenv("VCAP_SERVICES", interpolatedServices)
+	return nil
 }
 
 func credhubClient(credhubURI string) (*credhub.CredHub, error) {

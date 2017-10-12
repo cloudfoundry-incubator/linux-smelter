@@ -416,7 +416,7 @@ var _ = Describe("Launcher", func() {
 					})
 
 					It("prints an error message", func() {
-						Eventually(session).Should(gexec.Exit(5))
+						Eventually(session).Should(gexec.Exit(4))
 						Eventually(session.Err).Should(gbytes.Say("Unable to interpolate credhub references"))
 					})
 				})
