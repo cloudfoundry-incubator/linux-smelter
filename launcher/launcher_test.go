@@ -31,23 +31,28 @@ var _ = Describe("Launcher", func() {
 	var session *gexec.Session
 	var startCommand string
 
+	removeFromLauncherEnv := func(keys ...string) {
+		newEnv := []string{}
+		for _, env := range launcherCmd.Env {
+			found := false
+			for _, key := range keys {
+				if strings.HasPrefix(env, key) {
+					found = true
+					break
+				}
+			}
+			if !found {
+				newEnv = append(newEnv, env)
+			}
+		}
+		launcherCmd.Env = newEnv
+	}
+
 	BeforeEach(func() {
 		Expect(os.Setenv("CALLERENV", "some-value")).To(Succeed())
 
 		if runtime.GOOS == "windows" {
 			startCommand = "cmd /C set && echo PWD=%cd% && echo running app"
-
-			testCmd := &exec.Cmd{
-				Path: "cmd",
-				Args: []string{
-					"/C",
-					"set",
-				},
-				Env: append(os.Environ(), "USERPROFILE=blah"),
-			}
-			out, err := testCmd.Output()
-			Expect(err).NotTo(HaveOccurred())
-			fmt.Fprintf(os.Stderr, "OUTPUT is %v", string(out))
 		} else {
 			startCommand = "env; echo running app"
 		}
@@ -346,6 +351,7 @@ var _ = Describe("Launcher", func() {
 			}
 			server.HTTPTestServer.StartTLS()
 
+			removeFromLauncherEnv("USERPROFILE")
 			launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("USERPROFILE=%s", fixturesSslDir))
 			if containerpath.For("/") == fixturesSslDir {
 				launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("CF_INSTANCE_CERT=%s", filepath.Join("/certs", "client-tls.crt")))
@@ -417,13 +423,7 @@ var _ = Describe("Launcher", func() {
 
 				Context("when the instance cert and key are invalid", func() {
 					BeforeEach(func() {
-						newEnv := []string{}
-						for _, env := range launcherCmd.Env {
-							if !(strings.HasPrefix(env, "CF_INSTANCE_CERT") || strings.HasPrefix(env, "CF_INSTANCE_KEY")) {
-								newEnv = append(newEnv, env)
-							}
-						}
-						launcherCmd.Env = newEnv
+						removeFromLauncherEnv("CF_INSTANCE_CERT", "CF_INSTANCE_KEY")
 						if containerpath.For("/") == fixturesSslDir {
 							launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("CF_INSTANCE_CERT=%s", filepath.Join("/hello", "hello.go")))
 							launcherCmd.Env = append(launcherCmd.Env, fmt.Sprintf("CF_INSTANCE_KEY=%s", filepath.Join("/hello", "hello.go")))
@@ -441,13 +441,7 @@ var _ = Describe("Launcher", func() {
 
 				Context("when the instance cert and key aren't set", func() {
 					BeforeEach(func() {
-						newEnv := []string{}
-						for _, env := range launcherCmd.Env {
-							if !(strings.HasPrefix(env, "CF_INSTANCE_CERT") || strings.HasPrefix(env, "CF_INSTANCE_KEY")) {
-								newEnv = append(newEnv, env)
-							}
-						}
-						launcherCmd.Env = newEnv
+						removeFromLauncherEnv("CF_INSTANCE_CERT", "CF_INSTANCE_KEY")
 					})
 
 					It("prints an error message", func() {
@@ -458,13 +452,7 @@ var _ = Describe("Launcher", func() {
 
 				Context("when the system certs path isn't set", func() {
 					BeforeEach(func() {
-						newEnv := []string{}
-						for _, env := range launcherCmd.Env {
-							if !strings.HasPrefix(env, "CF_SYSTEM_CERTS_PATH") {
-								newEnv = append(newEnv, env)
-							}
-						}
-						launcherCmd.Env = newEnv
+						removeFromLauncherEnv("CF_SYSTEM_CERTS_PATH")
 					})
 
 					It("prints an error message", func() {
