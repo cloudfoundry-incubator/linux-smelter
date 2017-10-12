@@ -24,7 +24,6 @@ type PlatformOptions struct {
 }
 
 func main() {
-	fmt.Fprintf(os.Stderr, "IT IS %v", os.Getenv("USERPROFILE"))
 	if len(os.Args) < 4 {
 		fmt.Fprintf(os.Stderr, "%s: received only %d arguments\n", os.Args[0], len(os.Args)-1)
 		fmt.Fprintf(os.Stderr, "Usage: %s <app-directory> <start-command> <metadata>", os.Args[0])

@@ -381,7 +381,6 @@ var _ = Describe("Launcher", func() {
 					})
 
 					It("updates VCAP_SERVICES with the interpolated content and runs the process without VCAP_PLATFORM_OPTIONS", func() {
-						Eventually(session.Out).ShouldNot(gbytes.Say("IT IS"))
 						Eventually(session).Should(gexec.Exit(0))
 						Eventually(session.Out).Should(gbytes.Say("VCAP_SERVICES=INTERPOLATED_JSON"))
 						Eventually(session.Out).ShouldNot(gbytes.Say("VCAP_PLATFORM_OPTIONS"))
