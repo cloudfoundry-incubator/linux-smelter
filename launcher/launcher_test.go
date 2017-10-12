@@ -381,7 +381,7 @@ var _ = Describe("Launcher", func() {
 					})
 
 					It("updates VCAP_SERVICES with the interpolated content", func() {
-						fmt.Fprintf("session output: %s", string(session.Out.Contents()))
+						fmt.Fprintf(os.Stderr, "session output: %s", string(session.Out.Contents()))
 						Eventually(session).Should(gexec.Exit(0))
 						Eventually(session.Out).Should(gbytes.Say("VCAP_SERVICES=INTERPOLATED_JSON"))
 					})
