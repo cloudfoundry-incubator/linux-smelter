@@ -6,10 +6,6 @@ import (
 	"path/filepath"
 )
 
-type cpath struct {
-	root string
-}
-
 func New(_ string) *cpath {
 	return &cpath{
 		root: "/",
