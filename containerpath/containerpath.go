@@ -10,7 +10,7 @@ type cpath struct {
 
 func New(_ string) *cpath {
 	return &cpath{
-		root: "/",
+		root: "",
 	}
 }
 
