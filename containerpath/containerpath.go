@@ -1,4 +1,4 @@
-// +build !windows2012R2
+// +build !windows,!windows2012R2
 
 package containerpath
 
