@@ -184,6 +184,7 @@ var _ = Describe("Building", func() {
 			server.HTTPTestServer.StartTLS()
 
 			cpath := containerpath.New(fixturesSslDir)
+			sessionSetEnv("USERPROFILE", fixturesSslDir)
 			if cpath.For("/") == fixturesSslDir {
 				// windows2012
 				sessionSetEnv("CF_INSTANCE_CERT", filepath.Join("/", "certs", "client-tls.crt"))
